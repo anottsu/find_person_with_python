@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  anime_recognition:
+    build: .
+    volumes:
+      - /home/anottsu/Documents/ALURA PYTHON/PROJETOS/FindPerson/dataCollect/animeImages:/app/dataCollect/animeImages
+    command: python dataCollect/processingImages.py
