@@ -44,36 +44,31 @@ def save_processed_image(image, character_name, save_dir='./processed_images'):
     except Exception as e:
         print(f"Erro ao salvar a imagem: {e}")
 
-# Função para processar todas as imagens da pasta local
+# Função para processar todas as imagens da pasta local (incluindo subpastas)
 def process_and_save_images_from_folder(folder_path):
     # Verifica se o diretório existe
     if not os.path.exists(folder_path):
         print(f"A pasta {folder_path} não existe!")
         return
 
-    # Lista todos os arquivos na pasta
-    image_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    # Percorre todas as subpastas e arquivos da pasta principal
+    for subdir, _, files in os.walk(folder_path):
+        for image_file in files:
+            if image_file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                # Caminho completo da imagem
+                image_path = os.path.join(subdir, image_file)
+                
+                # Extrai o nome do personagem (remover a extensão do arquivo)
+                character_name = os.path.splitext(image_file)[0]
 
-    # Processa cada imagem na pasta
-    for image_file in image_files:
-        # Caminho completo da imagem
-        image_path = os.path.join(folder_path, image_file)
-        
-        # Extrai o nome do personagem (remover a extensão do arquivo)
-        character_name = os.path.splitext(image_file)[0]
-
-        # Pré-processa a imagem
-        processed_image = preprocess_image(image_path)
-        if processed_image is not None:
-            # Salva a imagem pré-processada
-            save_processed_image(processed_image, character_name)
+                # Pré-processa a imagem
+                processed_image = preprocess_image(image_path)
+                if processed_image is not None:
+                    # Salva a imagem pré-processada
+                    save_processed_image(processed_image, character_name)
 
 # Caminho da pasta onde as imagens estão armazenadas
 folder_path = '/app/dataCollect/animeImages'
-
-
-
-
 
 # Processa e salva as imagens da pasta local
 process_and_save_images_from_folder(folder_path)

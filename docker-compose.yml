@@ -1,8 +1,18 @@
-version: '3.8'
-
 services:
-  anime_recognition:
+  # Serviço para processar imagens
+  processing_service:
     build: .
     volumes:
-      - /home/anottsu/Documents/ALURA PYTHON/PROJETOS/FindPerson/dataCollect/animeImages:/app/dataCollect/animeImages
-    command: python dataCollect/processingImages.py
+      - ./dataCollect:/app/dataCollect  # Mapeando a pasta de imagens
+      - ./dataCollect/processed_images:/app/dataCollect/processed_images  # Mapeando a pasta de imagens processadas dentro de dataCollect
+    command: python dataCollect/processingImages.py  # Comando para rodar o script de processamento de imagens
+
+  # Serviço para estruturar o dataset após o processamento das imagens
+  dataset_service:
+    build: .
+    volumes:
+      - ./dataCollect:/app/dataCollect  # Mapeando a pasta de imagens
+      - ./dataCollect/processed_images:/app/dataCollect/processed_images  # Mapeando a pasta de imagens processadas dentro de dataCollect
+    command: python dataCollect/estruturaDataset.py  # Caminho absoluto para o script
+    depends_on:
+      - processing_service  # Garante que o serviço de processamento será executado antes do de estruturação
